@@ -4,11 +4,18 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("speed metrics")]
-    public float speed = 25f;
-    public float jumpSpeed = 40f;
 
-    [Header("dash metrics")]
+
+    [Header("Move Metrics")]
+    public float moveSpeed = 10f;
+    public float acceleration = 1f;
+    public float decceleration = 1f;
+    public float velPower = 2f;
+    public float jumpForce = 40f;
+    public float frictionValue = 1f;
+    public float horizontalInput;
+
+    [Header("Dash Metrics")]
     public float dashSpeed = 75f;
     public float dashDuration = 0.2f;
     public float dashUpSpeed = 50f;
@@ -16,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
     public float diagonalDashSpeed = 1f;
     public KeyCode dashButton = KeyCode.F;
 
+    [Header("Indicators")]
     public bool isGrounded = false;
     public bool canDash = false;
     public bool isDashing = false;
@@ -40,6 +48,8 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Update()
     {
+        horizontalInput = Input.GetAxis("Horizontal");
+
         CheckIfGrounded();
 
         if (Input.GetButtonDown("Jump") && (isGrounded || canAirJump))
@@ -64,18 +74,33 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        float horizontalInput = Input.GetAxis("Horizontal");
-        rb.velocity = new Vector2(horizontalInput * speed, rb.velocity.y);
+        //rb.velocity = new Vector2(horizontalInput * speed, rb.velocity.y);
+        float targetSpeed = horizontalInput * moveSpeed;
 
+        float speedDif = targetSpeed - rb.velocity.x;
+
+        float accelRate = (Mathf.Abs(targetSpeed) > 0.01) ? acceleration : decceleration;
+
+        float movement = Mathf.Pow(Mathf.Abs(speedDif) * accelRate, velPower) * Mathf.Sign(speedDif);
+
+        rb.AddForce(movement * Vector2.right);
+
+        if (isGrounded && horizontalInput == 0)
+        {
+            float amount = Mathf.Min(Mathf.Abs(rb.velocity.x), Mathf.Abs(frictionValue));
+
+            amount *= Mathf.Sign(rb.velocity.x);
+            rb.AddForce(Vector2.right * -amount, ForceMode2D.Impulse);
+        }
         if (jumpPressed && isGrounded)
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             canJump = false;
             jumpPressed = false;
         }
         if (jumpPressed && canAirJump && !isGrounded)
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             canAirJump = false;
             jumpPressed = false;
         }

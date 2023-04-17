@@ -106,7 +106,7 @@ Rigidbody2D:
   m_GravityScale: 1.5
   m_Material: {fileID: 6200000, guid: 42618daca920d444c81fb51fc5fe56d0, type: 2}
   m_Interpolate: 1
-  m_SleepingMode: 2
+  m_SleepingMode: 0
   m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!61 &443225603981188043
@@ -118,7 +118,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 443225603981188023}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 42618daca920d444c81fb51fc5fe56d0, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -147,12 +147,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ab76ebea6593214ea12abade2d39e9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2.5
-  jumpSpeed: 4
-  dashSpeed: 7.5
-  dashDuration: 0.2
+  moveSpeed: 2.5
+  acceleration: 2
+  decceleration: 1
+  velPower: 2
+  jumpForce: 4
+  frictionValue: 0.2
+  horizontalInput: 0
+  dashSpeed: 6
+  dashDuration: 0.15
   dashUpSpeed: 4
-  dashUpDuration: 0.2
+  dashUpDuration: 0.1
   diagonalDashSpeed: 1
   dashButton: 102
   isGrounded: 1
@@ -160,7 +165,7 @@ MonoBehaviour:
   isDashing: 0
   canJump: 0
   canAirJump: 1
-  dir: -1
+  dir: 1
   GroundLayer:
     serializedVersion: 2
     m_Bits: 8
